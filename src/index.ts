@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import errorMiddleware from './middleware/error.middleware';
 const app=express();
 //middleware to parse incaming request
 app.use(express.json());
@@ -17,12 +18,15 @@ app.use(
         message:"Too many request to this IP"//error message
     })
 );
+
 //http request logger middleware
 app.use(morgan('common'));
 const port=3000;
 //add  route
 app.get('/',(req,res)=>{
     // console.log('Hello world')
+    throw new Error("Error occure ooooo");
+    
     res.json({
         message:"hello World"
     })
@@ -36,6 +40,12 @@ app.post('/',(req,res)=>{
         data:req.body,
     });
 });
+app.use(errorMiddleware);
+app.use((_req,res)=>{
+    res.status(404).json({
+        message:'OOh is route not found',
+    })
+})
 //add server
 app.listen(port,()=>{
     console.log(`server is starting at port:${port}`);
