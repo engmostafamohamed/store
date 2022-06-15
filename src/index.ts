@@ -3,6 +3,9 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import errorMiddleware from './middleware/error.middleware';
+import config from './config';
+import db from './database'
+// console.log(config);
 const app=express();
 //middleware to parse incaming request
 app.use(express.json());
@@ -21,7 +24,7 @@ app.use(
 
 //http request logger middleware
 app.use(morgan('common'));
-const port=3000;
+const port=config.port||3000;
 //add  route
 app.get('/',(req,res)=>{
     // console.log('Hello world')
@@ -38,6 +41,16 @@ app.post('/',(req,res)=>{
     res.json({
         message:"hello World",
         data:req.body,
+    });
+});
+//test database
+db.connect().then((client)=>{
+    return client.query('SELECT NOW()').then((res)=>{
+        client.release();
+        console.log(res.rows);
+    }).catch((err)=>{
+        client.release,
+        console.log(err.stack);
     });
 });
 app.use(errorMiddleware);
