@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "npm run build && node dist/index.js",
     "test": "npm run build && jasmine",
+    "migration:run":"db-migrate up",
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint src/**/*.ts"
   },
@@ -28,6 +29,8 @@
     "@types/morgan": "^1.9.3",
     "@types/pg": "^8.6.5",
     "@types/supertest": "^2.0.12",
+    "db-migrate": "^0.11.13",
+    "db-migrate-pg": "^1.2.2",
     "dotenv": "^16.0.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
