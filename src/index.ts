@@ -4,8 +4,9 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import errorMiddleware from './middleware/error.middleware';
 import config from './config';
+import routes from './routes';
 import db from './database'
-// console.log(config);
+console.log('this is ENV',process.env.NODE_ENV);
 const app=express();
 //middleware to parse incaming request
 app.use(express.json());
@@ -26,23 +27,24 @@ app.use(
 app.use(morgan('common'));
 const port=config.port||3000;
 //add  route
+app.use('/api',routes);
 app.get('/',(req,res)=>{
     // console.log('Hello world')
-    throw new Error("Error occure ooooo");
+    // throw new Error("Error occure ooooo");
     
     res.json({
         message:"hello World"
     })
 })
 //post request
-app.post('/',(req,res)=>{
+// app.post('/',(req,res)=>{
     
-    console.log(req.body);
-    res.json({
-        message:"hello World",
-        data:req.body,
-    });
-});
+//     console.log(req.body);
+//     res.json({
+//         message:"hello World",
+//         data:req.body,
+//     });
+// });
 //test database
 db.connect().then((client)=>{
     return client.query('SELECT NOW()').then((res)=>{
