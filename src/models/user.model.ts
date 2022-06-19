@@ -96,5 +96,27 @@ class UserModel{
         throw new Error(`Could not Delete user ${id},${(error as Error).message}`);
     }
    }
+    // authenticate user
+    async authenticate(email:string,password:string):Promise<User|null>{
+        try {
+            const connection=await DB.connect();
+            const sql =`SELECT password FROM users where email =$1`;
+            const result=await connection.query(sql,[email]);
+            if (result.rows.length) {
+                const{password:hashPassword}=result.rows[0];
+                const ispasswordValid=bcrypt.compareSync(`${password}${config.pepper}`,hashPassword);
+                if (ispasswordValid) {
+                    const userInfo=await connection.query(`SELECT id,email,user_name,first_name,
+                    last_name FROM users WHERE email=($1)`,[email]);
+                    return userInfo.rows[0];
+
+                }
+            }
+            connection.release();
+            return null;
+        } catch (error) {
+            throw new Error(`unable to login: ${(error as Error).message}`);
+        }
+       }
 }
 export default UserModel;
